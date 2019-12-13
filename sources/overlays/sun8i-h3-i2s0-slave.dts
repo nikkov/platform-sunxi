@@ -1,4 +1,4 @@
-// Definitions for G-Dis DAC
+// Definitions for External I2S DAC
 /dts-v1/;
 /plugin/;
 
@@ -63,7 +63,7 @@
 				simple-audio-card,format = "i2s";
 				simple-audio-card,bitclock-master = <&codec_dai>; 
 				simple-audio-card,frame-master = <&codec_dai>; 
-				simple-audio-card,mclk-fs = <128>;
+				simple-audio-card,mclk-fs = <64>;
 				status = "okay";
 
 				simple-audio-card,cpu {
