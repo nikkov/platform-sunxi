@@ -17,14 +17,12 @@ fi
 cd ${C}
 mkdir -p ${A}/userpatches/kernel/sunxi-${B}
 cp ${C}/patches/kernel/sunxi-${B}/*.patch ${A}/userpatches/kernel/sunxi-${B}/
-#if [ "$P" = "nanopineo2" ]; then
-#cp ${A}/config/kernel/linux-sunxi64-${B}.config ${A}/userpatches/linux-sunxi64-${B}.config
-#else
-#cp ${A}/config/kernel/linux-sunxi-${B}.config ${A}/userpatches/linux-sunxi-${B}.config
-#fi
+if [ "$P" = "nanopineo2" ]; then
+cp ${A}/config/kernel/linux-sunxi64-${B}.config ${A}/userpatches/linux-sunxi64-${B}.config
 cd ${A}
-
-#patch -p0 < ${C}/config.patch
+patch -p0 < ${C}/patches/config/linux-sunxi64-${B}.patch
+fi
+cd ${A}
 
 rm -rf ${A}/output/debs
 
@@ -41,9 +39,6 @@ dpkg-deb -x ${A}/output/debs/linux-dtb-* ${P}
 dpkg-deb -x ${A}/output/debs/linux-image-* ${P}
 dpkg-deb -x ${A}/output/debs/linux-u-boot-* ${P}
 dpkg-deb -x ${A}/output/debs/armbian-firmware_* ${P}
-#mkdir ${P}/lib/firmware
-#git clone https://github.com/armbian/firmware ${P}/lib/firmware
-#rm -rf ${P}/lib/firmware/.git
 
 if [ "$P" = "nanopineo2" ]; then
   cp ${P}/usr/lib/linux-u-boot-${B}-*/sunxi-spl.bin ${P}/u-boot
@@ -65,12 +60,14 @@ fi
 mkdir ${P}/boot/overlay-user
 #cp sun8i-h3-i2s0*.* ${P}/boot/overlay-user
 if [ "$P" = "nanopineo2" ]; then
+  cp sun50i-h5-*.* ${P}/boot/overlay-user
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun50i-h5-i2s0-master.dtbo ${C}/sources/overlays/sun50i-h5-i2s0-master.dts
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun50i-h5-i2s0-slave.dtbo ${C}/sources/overlays/sun50i-h5-i2s0-slave.dts
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun50i-h5-powen.dtbo ${C}/sources/overlays/sun50i-h5-powen.dts
 
   cp ${A}/config/bootscripts/boot-sun50i-next.cmd ${P}/boot/boot.cmd
 else
+  cp sun8i-h3-*.* ${P}/boot/overlay-user
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun8i-h3-i2s0-master.dtbo ${C}/sources/overlays/sun8i-h3-i2s0-master.dts
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun8i-h3-i2s0-slave.dtbo ${C}/sources/overlays/sun8i-h3-i2s0-slave.dts
   dtc -@ -q -I dts -O dtb -o ${P}/boot/overlay-user/sun8i-h3-powen.dtbo ${C}/sources/overlays/sun8i-h3-powen.dts
