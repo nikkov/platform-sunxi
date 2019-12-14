@@ -19,13 +19,6 @@
 	};
     };
 
-    fragment@2 {
-	target = <&leds_npi>;
-	__overlay__ {
-		pins = "PA10", "PA0";
-	};
-    };
-
     fragment@3 {
 	target-path = "/leds";
 	__overlay__ {
